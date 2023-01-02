@@ -3,10 +3,10 @@
 Example/Template Project to demonstrate hooking Program Functions under X64 Architecture using the latest Version of Microsoft Detours.
 
 Features:
-  -> Hook Void and Type Function example
-  -> Modify and intercept Arguments
-  -> Signature Scanning to find Function Address
-  -> Ability to specify Function Address without Signature Scanning ( For fast testing )
+  - Hook Void and Type Function example
+  - Modify and intercept Arguments
+  - Signature Scanning to find Function Address
+  - Ability to specify Function Address without Signature Scanning ( For fast testing )
 
 Compiling:
   1. Clone Repository to your local machine.
@@ -15,7 +15,7 @@ Compiling:
   4. Execute SimpleInjector.exe to inject the DLL and observe Modifications
   
 Motivation/Aim of Project:
-  -> Finding clear Information on Function Hooking is rather difficult, especially on X64 Target Platforms so this Project should simplify
+  - Finding clear Information on Function Hooking is rather difficult, especially on X64 Target Platforms so this Project should simplify
   the Process for anyone looking to get started in this Topic, beware that this example is just one of many ways to do this and is also not
   the most proficient code. Function Hooking plays a very important Role if you want to create Modifications for a closed-source Game.
   
