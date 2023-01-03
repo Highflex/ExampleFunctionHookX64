@@ -7,6 +7,7 @@ Features:
   - Modify and intercept Arguments
   - Signature Scanning to find Function Address
   - Ability to specify Function Address without Signature Scanning ( For fast testing )
+  - Added Extra Sample: Patch any Instructions in Target Program
 
 Compiling:
   1. Clone Repository to your local machine.
