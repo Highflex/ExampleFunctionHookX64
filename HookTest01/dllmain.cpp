@@ -60,7 +60,76 @@ DWORD_PTR WINAPI ApplicationCore(HINSTANCE hModule)
 //
 bool perform_hook = false;
 
-// DLL
+/* function to setup all needed hooks */
+void CreateHook()
+{
+    // address of function
+    //FunctionAddress = (DWORD64)GetModuleHandle(L"TestAppToHook.exe") + 0x123A0;
+    //Function2Address = (DWORD64)GetModuleHandle(L"TestAppToHook.exe") + 0x12340;
+
+    // signatures generated using SigMaker for IDA 7 and hovering over function.
+    DWORD_PTR FunctionAddress = FindPattern("TestAppToHook.exe", "\xF3\x0F\x11\x44\x24\x00", "xxxxx?");
+    DWORD_PTR Function2Address = FindPattern("TestAppToHook.exe", "\x40\x55\x57\x48\x81\xEC\x00\x00\x00\x00\x48\x8D\x6C\x24\x00\x48\x8D\x0D\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8D\x15\x00\x00\x00\x00", "xxxxxx????xxxx?xxx????x????xxx????");
+
+    // store address to original functions
+    oFunction = (tFunction)FunctionAddress;
+    oFunction2 = (tFunction2)Function2Address;
+
+    std::cout << "" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "Test calling of original functions!" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "" << std::endl;
+
+    // you can call the original functions now by simply doing this:
+    oFunction(5.55f);
+    oFunction2();
+
+    std::cout << "" << std::endl;
+    std::cout << "" << std::endl;
+
+    /*
+    std::cout << "Function Address Org: " << std::hex << FunctionAddress << std::endl;
+    std::cout << "Function Address Sig Scan: " << std::hex << ScannedFunctionAddress << std::endl;
+    std::cout << "Function Address 2 Org: " << std::hex << Function2Address << std::endl;
+    std::cout << "Function Address 2 Sig Scan: " << std::hex << ScannedFunction2Address << std::endl;
+    */
+    DetourTransactionBegin();
+    DetourUpdateThread(GetCurrentThread());
+    // assign original function and detour it then!
+    DetourAttach(&(PVOID&)oFunction, hFunction);
+    DetourAttach(&(PVOID&)oFunction2, hFunction2);
+    DetourTransactionCommit();
+
+    // not needed for this example
+    //DllHandle = hModule;
+    //CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ApplicationCore, NULL, 0, NULL);
+
+    std::cout << "" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "Hook is now active!" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "---------" << std::endl;
+    std::cout << "" << std::endl;
+}
+
+void DetachHooks()
+{
+    /* in case of detaching remove hooks */
+    DetourTransactionBegin();
+    DetourUpdateThread(GetCurrentThread());
+    DetourDetach(&(PVOID&)oFunction, hFunction);
+    DetourDetach(&(PVOID&)oFunction2, hFunction2);
+}
+
+// DLL Main
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
@@ -69,72 +138,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         if (!perform_hook)
         {
             std::cout << "DLL_PROCESS_ATTACH" << std::endl;
-
-            // address of function
-            //FunctionAddress = (DWORD64)GetModuleHandle(L"TestAppToHook.exe") + 0x123A0;
-            //Function2Address = (DWORD64)GetModuleHandle(L"TestAppToHook.exe") + 0x12340;
-
-            // signatures generated using SigMaker for IDA 7 and hovering over function.
-            DWORD_PTR FunctionAddress = FindPattern("TestAppToHook.exe", "\xF3\x0F\x11\x44\x24\x00", "xxxxx?");
-            DWORD_PTR Function2Address = FindPattern("TestAppToHook.exe", "\x40\x55\x57\x48\x81\xEC\x00\x00\x00\x00\x48\x8D\x6C\x24\x00\x48\x8D\x0D\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8D\x15\x00\x00\x00\x00", "xxxxxx????xxxx?xxx????x????xxx????");
-
-            // store address to original functions
-            oFunction = (tFunction)FunctionAddress;
-            oFunction2 = (tFunction2)Function2Address;
-
-            std::cout << "" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "Test calling of original functions!" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "" << std::endl;
-
-            // you can call the original functions now by simply doing this:
-            oFunction(5.55f);
-            oFunction2();
-
-            std::cout << "" << std::endl;
-            std::cout << "" << std::endl;
-
-            /*
-            std::cout << "Function Address Org: " << std::hex << FunctionAddress << std::endl;
-            std::cout << "Function Address Sig Scan: " << std::hex << ScannedFunctionAddress << std::endl;
-            std::cout << "Function Address 2 Org: " << std::hex << Function2Address << std::endl;
-            std::cout << "Function Address 2 Sig Scan: " << std::hex << ScannedFunction2Address << std::endl;
-            */
-            DetourTransactionBegin();
-            DetourUpdateThread(GetCurrentThread());
-            // assign original function and detour it then!
-            DetourAttach(&(PVOID&)oFunction, hFunction);
-            DetourAttach(&(PVOID&)oFunction2, hFunction2);
-            DetourTransactionCommit();
- 
-            // not needed for this example
-            //DllHandle = hModule;
-            //CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ApplicationCore, NULL, 0, NULL);
-
-            std::cout << "" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "Hook is now active!" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
-            std::cout << "---------" << std::endl;
+            CreateHook();
             perform_hook = true;
-            std::cout << "" << std::endl;
+            
         }
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
-        /* in case of detaching remove hooks */
-        DetourTransactionBegin();
-        DetourUpdateThread(GetCurrentThread());
-        DetourDetach(&(PVOID&)oFunction, hFunction);
-        DetourDetach(&(PVOID&)oFunction2, hFunction2);
+        DetachHooks();
         fflush(stdout);
         break;
     }
