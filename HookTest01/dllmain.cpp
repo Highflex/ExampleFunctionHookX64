@@ -61,7 +61,7 @@ DWORD_PTR WINAPI ApplicationCore(HINSTANCE hModule)
 bool perform_hook = false;
 
 /* function to setup all needed hooks */
-void CreateHook()
+void CreateHooks()
 {
     // address of function
     //FunctionAddress = (DWORD64)GetModuleHandle(L"TestAppToHook.exe") + 0x123A0;
@@ -134,20 +134,21 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 {
     switch (ul_reason_for_call)
     {
-    case DLL_PROCESS_ATTACH:
-        if (!perform_hook)
-        {
-            std::cout << "DLL_PROCESS_ATTACH" << std::endl;
-            CreateHook();
-            perform_hook = true;
+        case DLL_PROCESS_ATTACH:
+            if (!perform_hook)
+            {
+                std::cout << "DLL_PROCESS_ATTACH" << std::endl;
+                CreateHooks();
+                perform_hook = true;
             
-        }
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        DetachHooks();
-        fflush(stdout);
-        break;
+            }
+        case DLL_THREAD_ATTACH:
+        case DLL_THREAD_DETACH:
+        case DLL_PROCESS_DETACH:
+            DetachHooks();
+            fflush(stdout);
+            break;
     }
+
     return TRUE;
 }
