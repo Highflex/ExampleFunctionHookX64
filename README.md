@@ -27,3 +27,5 @@ Credits/Tools used:
   - Signature Scanning https://www.unknowncheats.me/forum/general-programming-and-reversing/317273-pattern-scan-x64-bit.html
   - Injector ( Came from Github Repo but i forgot the Link, still all Credit to the Original Author! )
   - ReClass.NET https://github.com/ReClassNET/ReClass.NET
+  - IDA Pro https://hex-rays.com/ida-pro/
+  - SigMaker-x64 https://github.com/ajkhoury/SigMaker-x64
