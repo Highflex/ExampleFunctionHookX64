@@ -8,7 +8,7 @@ Features:
   - Signature Scanning to find Function Address
   - Ability to specify Function Address without Signature Scanning ( For fast testing )
   - Patch any Instructions in Target Program example
-  - Hook and manipulate c++ class members and functions example ( including ReClass Template )
+  - Hook and manipulate C++ Class Members and Virtual Functions example ( including ReClass Template )
 
 Compiling:
   1. Clone Repository to your local machine.
