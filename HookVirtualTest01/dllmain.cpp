@@ -12,6 +12,8 @@
 // the reversed classes so we can manipulate the hooked data class members
 #include "reversed_classes.h"
 
+bool bEdited = false;
+
 /* hook tick function to find instance addresses */
 typedef void(*tTickFunc)(Actor* pInstance);
 tTickFunc oTickFunc;
@@ -32,12 +34,25 @@ void hTickFunc(Actor* pInstance)
     //
     Player* pMyPlayer = dynamic_cast<Player*>(pInstance);
 
-    if(pMyPlayer != nullptr)
-        std::cout << "Instance PlayerID: " << (int)pMyPlayer->PlayerID << std::endl;
+    if (pMyPlayer != nullptr)
+    {
+        /*
+        if (!bEdited)
+        {
+            // edit test of data
+            pMyPlayer->PlayerID = 7000;
+            bEdited = true;
+            std::cout << "Player edit completed!" << std::endl;
+        }
+        */
+        
+        std::cout << "Instance PlayerID: " << pMyPlayer->PlayerID << std::endl;
+    }
+        
 
     Enemy* pMyEnemy = dynamic_cast<Enemy*>(pInstance);
     if (pMyEnemy != nullptr)
-        std::cout << "Instance EnemyID: " << (int)pMyEnemy->EnemyID << std::endl;
+        std::cout << "Instance EnemyID: " << pMyEnemy->EnemyID << std::endl;
 
     std::cout << "----- Detour TICK END -----" << std::endl;
     std::cout << "" << std::endl;
